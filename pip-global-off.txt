@@ -1,0 +1,6 @@
+sudo nano /etc/pip.conf
+
+put in:
+
+[global]
+break-system-packages = true
