@@ -18,6 +18,9 @@ button { background: #232839; color: #d7dce6; border: 1px solid #333a4e; border-
 button:hover { background: #2d3450; }
 #midiStatus { color: #6fbf73; max-width: 260px; }
 #learnStatus { color: #ffb347; }
+#channelMonitor { display: inline-flex; gap: 3px; align-items: center; }
+#channelMonitor .ch { width: 18px; height: 18px; border-radius: 4px; background: #1c1f28; border: 1px solid #2c3242; color: #5c6579; font-size: 9px; display: inline-flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
+#channelMonitor .ch.active { background: #1e4d2b; border-color: #3f9e57; color: #7be495; }
 
 main { flex: 1; display: flex; min-height: 0; }
 #slots { width: 300px; min-width: 300px; overflow-y: auto; background: #12141c; border-right: 1px solid #262b3a; padding: 8px; }

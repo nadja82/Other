@@ -28,6 +28,7 @@ export function makeSlot(id) {
     id,
     name: `Slot ${id + 1}`,
     recordChannel: 1,
+    recordAllChannels: false,
     outChannel: id + 1,
     muted: false,
     solo: false,

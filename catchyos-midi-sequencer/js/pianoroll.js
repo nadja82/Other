@@ -178,6 +178,7 @@ export class PianoRoll {
   }
 
   _drawPlayhead(ctx, h) {
+    if (this.slot.notes.length === 0) return;
     const x = this.tickToX(this.playheadTick);
     if (x > KEY_W && x < this.canvas.clientWidth) {
       ctx.strokeStyle = '#ff5555';
