@@ -1,0 +1,11 @@
+{
+  "name": "catchyos-midi-sequencer",
+  "version": "0.1.0",
+  "description": "WebMIDI-Sequencer für CatchyOS: 16 Slots, Aufnahme auf MIDI-Channel, Pianoroll-Editor, MIDI-Clock-Sync",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "start": "node server.mjs"
+  },
+  "license": "MIT"
+}

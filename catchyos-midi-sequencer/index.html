@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CatchyOS MIDI-Sequencer</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header id="transport">
+  <div class="brand">CatchyOS <span>MIDI-Sequencer</span></div>
+  <div class="transport-controls">
+    <button id="transportPlay" title="Play/Pause (Leertaste)">▶</button>
+    <button id="transportStop" title="Stop + Reset">⏹</button>
+    <span id="position" class="position">1:1:1</span>
+    <span class="bpm">BPM <b id="bpmDisplay">--</b></span>
+  </div>
+  <div class="transport-settings">
+    <label>Clock
+      <select id="clockSource">
+        <option value="external">External MIDI-Clock</option>
+        <option value="internal">Internal</option>
+      </select>
+    </label>
+    <label>BPM <input id="bpmInput" type="number" min="20" max="400" value="120" /></label>
+    <label>Quantize
+      <select id="quantize">
+        <option value="off">aus</option>
+        <option value="1/1">1/1</option>
+        <option value="1/2">1/2</option>
+        <option value="1/4">1/4</option>
+        <option value="1/8">1/8</option>
+        <option value="1/16" selected>1/16</option>
+        <option value="1/32">1/32</option>
+      </select>
+    </label>
+    <label>Count-In (16tel) <input id="countIn" type="number" min="0" max="64" value="4" /></label>
+    <label class="chk"><input id="overdub" type="checkbox" /> Overdub</label>
+  </div>
+  <div class="transport-midi">
+    <span id="midiStatus">MIDI wird initialisiert…</span>
+    <label>In <select id="midiInput"></select></label>
+    <label>Out <select id="midiOutput"></select></label>
+    <button id="btnSave">💾 Speichern</button>
+    <button id="btnLoad">📂 Laden</button>
+    <input id="fileLoad" type="file" accept=".json" hidden />
+    <span id="learnStatus"></span>
+  </div>
+</header>
+
+<main>
+  <aside id="slots">
+    <div id="slotList"></div>
+  </aside>
+  <section id="editor">
+    <div id="editorBar">
+      <input id="slotNameEdit" maxlength="24" title="Instrumentenname" />
+      <label>Loop-Start <input id="loopStart" type="number" min="0" step="6" /></label>
+      <label>Loop-Ende <input id="loopEnd" type="number" min="6" step="6" /></label>
+      <label>Loop
+        <select id="loopMode">
+          <option value="loop">Loop</option>
+          <option value="once">Once</option>
+        </select>
+      </label>
+      <label>Transpose <input id="transpose" type="number" min="-48" max="48" step="1" value="0" /></label>
+      <button id="btnTransDown" title="-1 Halbton">−1</button>
+      <button id="btnTransUp" title="+1 Halbton">+1</button>
+      <label>Swing % <input id="swing" type="number" min="0" max="50" value="0" /></label>
+      <button id="btnUndo" title="Undo (Strg+Z)">↶ Undo</button>
+      <button id="btnDelete" title="Löschen (Entf)">🗑</button>
+      <button id="btnClear">Leeren</button>
+    </div>
+    <canvas id="pianoroll"></canvas>
+    <div id="editorHint">Klick = Note setzen · Drag = verschieben · Doppelklick = löschen · Shift+Rad = Zoom · Rad = Scroll</div>
+  </section>
+</main>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
