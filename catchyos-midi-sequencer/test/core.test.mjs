@@ -98,6 +98,23 @@ test('Recorder: Overdub merged statt löscht', () => {
   assert.deepEqual(slot.notes.map((n) => n.pitch).sort(), [60, 64]);
 });
 
+test('Recorder: recordAllChannels nimmt alle Channels auf', () => {
+  const p = makeProject();
+  p.quantize = 'off';
+  p.countIn = 0;
+  const rec = new Recorder(p);
+  rec.arm(0);
+  p.slots[0].recordAllChannels = true;
+  rec.startRecording(0);
+  rec.handleNoteOn(0, 1, 60, 100);
+  rec.handleNoteOff(6, 1, 60);
+  rec.handleNoteOn(12, 9, 64, 90);
+  rec.handleNoteOff(18, 9, 64);
+  const slot = rec.stopRecording();
+  assert.equal(slot.notes.length, 2);
+  assert.deepEqual(slot.notes.map((n) => n.pitch).sort(), [60, 64]);
+});
+
 test('Recorder: Count-In wird abgewartet', () => {
   const p = makeProject();
   p.countIn = 8; // 8 16tel = 48 Ticks

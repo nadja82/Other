@@ -57,10 +57,15 @@ export class Recorder {
     return slot;
   }
 
+  _channelMatches(channel) {
+    const s = this.armedSlot;
+    return s.recordAllChannels || channel === s.recordChannel;
+  }
+
   handleNoteOn(tick, channel, pitch, velocity) {
     if (!this.recording || !this.armedSlot) return;
     if (this._countingIn) return;
-    if (channel !== this.armedSlot.recordChannel) return;
+    if (!this._channelMatches(channel)) return;
     if (velocity === 0) return this.handleNoteOff(tick, channel, pitch);
     const key = `${channel}:${pitch}`;
     if (this._open.has(key)) this._closeNote(tick, key);
@@ -70,7 +75,7 @@ export class Recorder {
   handleNoteOff(tick, channel, pitch) {
     if (!this.recording || !this.armedSlot) return;
     if (this._countingIn) return;
-    if (channel !== this.armedSlot.recordChannel) return;
+    if (!this._channelMatches(channel)) return;
     this._closeNote(tick, `${channel}:${pitch}`);
   }
 

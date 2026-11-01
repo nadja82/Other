@@ -27,8 +27,10 @@ WebMIDI braucht eine sichere Umgebung: `localhost` funktioniert, für Zugriff vo
 
 ## Funktionen
 
-- **16 Slots**, jeder mit eigenem Namen (Instrument), Record-In-Channel und Out-Channel
-- **Aufnahme**: Slot armieren (⏺), Noten auf dem Record-Channel werden roh mit Tick-Zeitstempel aufgezeichnet, beim Stop quantized (Raster wählbar) und als Noten gespeichert
+- **16 Slots**, jeder mit eigenem Namen (Instrument), Record-In-Channel **oder „Alle Channels aufnehmen"**, und Out-Channel
+- **Channel-Monitor**: 16 Kacheln in der Kopfzeile zeigen live, welcher MIDI-Channel gerade Noten sendet (grün bei Note-On, erlischt nach ~1 s)
+- **Playhead-Linie** in der Pianoroll erscheint erst, sobald der Slot mindestens eine Note enthält
+- **Aufnahme**: Slot armieren (⏺), Noten werden roh mit Tick-Zeitstempel aufgezeichnet, beim Stop quantized (Raster wählbar) und als Noten gespeichert
 - **Count-In** vor der Aufnahme, **Overdub**-Modus (neu drüber statt löschen)
 - **Playback**: Slots einzeln starten (▶), Mute/Solo, Loop oder Once, Transpose, Swing
 - **MIDI-Clock**: empfängt Clock (24 PPQN), Start/Continue/Stop und Song Position Pointer; BPM wird aus der Clock berechnet und angezeigt. Fallback: interne Clock mit einstellbarem BPM

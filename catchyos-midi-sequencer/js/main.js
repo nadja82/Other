@@ -47,6 +47,7 @@ async function boot() {
     ? `MIDI OK — ${midi.inputs.length} Eingänge, ${midi.outputs.length} Ausgänge`
     : 'WebMIDI nicht verfügbar — bitte Chrome/Edge über HTTPS oder localhost öffnen';
   buildDeviceSelects();
+  buildChannelMonitor();
   buildSlotList();
   pianoRoll = new PianoRoll($('pianoroll'), project.slots[currentSlot], {
     onChange: () => { autoSave(); refreshSlotList(); },
@@ -65,6 +66,37 @@ function renderLoop() {
   requestAnimationFrame(renderLoop);
 }
 
+const channelActivity = new Array(17).fill(false);
+
+function buildChannelMonitor() {
+  const el = $('channelMonitor');
+  el.innerHTML = '';
+  for (let c = 1; c <= 16; c++) {
+    const dot = document.createElement('span');
+    dot.className = 'ch';
+    dot.id = `chmon-${c}`;
+    dot.textContent = c;
+    dot.title = `Channel ${c}`;
+    el.appendChild(dot);
+  }
+}
+
+function markChannel(channel, on) {
+  channelActivity[channel] = on;
+  const dot = $(`chmon-${channel}`);
+  if (dot) dot.classList.toggle('active', on);
+}
+
+function clearChannelMonitorSoon() {
+  clearTimeout(clearChannelMonitorSoon._t);
+  clearChannelMonitorSoon._t = setTimeout(() => {
+    for (let c = 1; c <= 16; c++) {
+      if (!channelActivity[c]) continue;
+      markChannel(c, false);
+    }
+  }, 1200);
+}
+
 function wireMidiInput() {
   midi.onMessage = (data, input) => {
     if (input !== midi.selectedInput && midi.selectedInput) return;
@@ -73,9 +105,13 @@ function wireMidiInput() {
     if (status === 0x90 || status === 0x80) {
       const pitch = data[1];
       const vel = data[2];
-      if (status === 0x90 && vel > 0) {
+      const isOn = status === 0x90 && vel > 0;
+      markChannel(channel, isOn);
+      clearChannelMonitorSoon();
+      if (isOn) {
         recorder.handleNoteOn(clock.tick, channel, pitch, vel);
         handleLearn(pitch, channel);
+        triggerFromLearn(pitch, channel);
       } else {
         recorder.handleNoteOff(clock.tick, channel, pitch);
       }
@@ -143,7 +179,8 @@ function buildSlotList() {
       <div class="slot-body">
         <input class="slot-name" value="${escapeHtml(slot.name)}" maxlength="24" />
         <div class="slot-ch">
-          <label>In <input type="number" class="rec-ch" min="1" max="16" value="${slot.recordChannel}" /></label>
+          <label>In <input type="number" class="rec-ch" min="1" max="16" value="${slot.recordChannel}" ${slot.recordAllChannels ? 'disabled' : ''} /></label>
+          <label title="Alle MIDI-Channels aufnehmen">Alle <input type="checkbox" class="rec-all" ${slot.recordAllChannels ? 'checked' : ''}/></label>
           <label>Out <input type="number" class="out-ch" min="1" max="16" value="${slot.outChannel}" /></label>
           <label class="mute"><input type="checkbox" class="mute-ch" ${slot.muted ? 'checked' : ''}/>M</label>
           <label class="solo"><input type="checkbox" class="solo-ch" ${slot.solo ? 'checked' : ''}/>S</label>
@@ -160,6 +197,11 @@ function buildSlotList() {
     });
     el.querySelector('.rec-ch').addEventListener('change', (e) => {
       slot.recordChannel = clamp(Number(e.target.value) || 1, 1, 16);
+      autoSave();
+    });
+    el.querySelector('.rec-all').addEventListener('change', (e) => {
+      slot.recordAllChannels = e.target.checked;
+      el.querySelector('.rec-ch').disabled = slot.recordAllChannels;
       autoSave();
     });
     el.querySelector('.out-ch').addEventListener('change', (e) => {
